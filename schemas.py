@@ -14,6 +14,7 @@ class UserIn(BaseModel):
     email: str
     password: str
 
+
 class UserDB(UserBase):
     hashed_password: str
 
@@ -32,3 +33,12 @@ class BaseRecipe(BaseModel):
 class Recipe(BaseRecipe):
     id: int
     user_id: int
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: Union[str, None] = None
