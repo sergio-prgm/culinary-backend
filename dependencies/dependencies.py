@@ -47,7 +47,11 @@ def get_password_hash(password):
 
 def authenticate_user(fake_db, username: str, password: str):
     '''
+    Checks if the user provided exists and verifies the password given
 
+    If everything works correctly, it returns the user
+
+    Used in /token
     '''
     user = get_user(fake_db, username)
     if not user:

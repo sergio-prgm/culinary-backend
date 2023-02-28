@@ -28,8 +28,6 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     '''
     # check username is unique
     db_user = sql_utils.get_user_by_email(db, user.email)
-    print(db_user)
-    print(user)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     return sql_utils.create_user(db, user)
