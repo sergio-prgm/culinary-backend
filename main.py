@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from routers import users, recipes
 
-from dependencies.dependencies import *
 from data import models
 from data.db import engine
 
@@ -36,10 +35,4 @@ async def root():
     return {"message": "Hello World"}
 
 
-# [x] File structure
-# [x] Hashing password
-# [x] JWT handling (cookies¿?)
-
-# [x] CORS
-# [x] SQL (supabase vs bit.io + cloudinary)
 # [ ] Error handling/middleware

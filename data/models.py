@@ -1,5 +1,5 @@
 # Data models to work with SQLAlchemy
-from sqlalchemy import Column, ForeignKey, Integer, String, ARRAY
+from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from data.db import Base

@@ -2,7 +2,6 @@
 
 from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
-# from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
@@ -13,15 +12,13 @@ from dependencies.env import ACCESS_TOKEN_EXPIRE_MINUTES
 from dependencies.users import get_current_user
 from utils import sql_utils
 
-# from mock import fake_users_db
-
 router = APIRouter(
     prefix='',
     tags=['users']
 )
 
 
-@router.get("/users/me", response_model=User)
+@router.get("/users/me", response_model=User, tags=["OAuth2"])
 def read_users_me(current_user: User = Depends(get_current_user)):
     '''
     Checks if the provided user exists checking if the token is valid
@@ -31,7 +28,7 @@ def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
 
 
-@router.post("/token", response_model=Token)
+@router.post("/token", response_model=Token, tags=["OAuth2"])
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     '''
     Uses the token_url to authenticate the user.
@@ -92,9 +89,8 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     return db_user
 
 
+# [ ] Update and delete user (previously authenticated)
 '''
 @router.put("/users/{user_id}", response_model=User)
 def update_user(user_int: int, {{I dont know}} db: Session = Depends(get_db))
 '''
-
-# OAuth2 necessary endpoints. Removed to test db stuff

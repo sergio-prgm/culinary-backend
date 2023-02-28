@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException, status
 from jose import ExpiredSignatureError, jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
 
-from data.schemas import TokenData, User
+from data.schemas import TokenData
 from dependencies.db import get_db
 from dependencies.env import SECRET_KEY, ALGORITHM
 from sqlalchemy.orm import Session
@@ -35,7 +35,6 @@ async def get_current_user(db: Session = Depends(get_db), token: str = Depends(o
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
-        print(payload)
         username: str = payload.get("username")
         user_id = payload.get("sub")
         if username is None:
