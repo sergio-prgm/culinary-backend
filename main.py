@@ -3,7 +3,7 @@ from routers import users, recipes
 
 from dependencies.dependencies import *
 from data import models
-from data.database import engine
+from data.db import engine
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -41,5 +41,5 @@ async def root():
 # [x] JWT handling (cookies¿?)
 
 # [x] CORS
-# [ ] SQL (supabase vs bit.io + cloudinary)
+# [x] SQL (supabase vs bit.io + cloudinary)
 # [ ] Error handling/middleware

@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 # from data.schemas import Token, User, UserCreate
 from data.schemas import User, UserCreate
 # from dependencies.dependencies import ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user, create_access_token
-from dependencies.dbdeps import get_db
+from dependencies.db import get_db
 from utils import sql_utils
 
 # from mock import fake_users_db
@@ -87,6 +87,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
             headers={"WWW-Authenticate": "Bearer"}
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    # {"sub": user.id, "username": user.username, "email": user.email}
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )

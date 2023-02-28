@@ -10,6 +10,19 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
+    '''### Dependency
+
+    Checks if the JWT is correct:
+    - Has a username inside of "sub" 
+    - The JWT is "decodable" using the right key and algorithm
+
+    Returns 401 errors:
+    - If the JWT is expired
+    - If there is anything else wrong with the provided JWT
+    - If there is a user in the JWT but it doesn't exist in the db
+
+    Returns the user 
+    '''
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid authentication credentials",

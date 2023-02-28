@@ -1,7 +1,7 @@
 from fastapi import HTTPException, Query, APIRouter, Depends
 from typing import Union
 from data.schemas import Recipe, RecipeCreate
-from dependencies.dbdeps import get_db
+from dependencies.db import get_db
 from sqlalchemy.orm import Session
 from utils import sql_utils
 

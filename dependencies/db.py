@@ -1,4 +1,4 @@
-from data.database import SessionLocal
+from data.db import SessionLocal
 
 # Opens the db connection on each request that uses it and auto-closes
 

@@ -3,13 +3,15 @@ from typing import Union
 
 from passlib.context import CryptContext
 from jose import jwt
-from dependencies.usersdeps import get_user
+from dependencies.users import get_user
 from dependencies.env import ALGORITHM, SECRET_KEY
 
 
 def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
     '''
     Creates and returns JWT with provided data and expiring date
+
+    It doesn't have the responsibility of the data that is put into it
     '''
     to_encode = data.copy()
     if expires_delta:
