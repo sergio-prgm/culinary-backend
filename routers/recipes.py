@@ -1,9 +1,10 @@
 from fastapi import HTTPException, Query, APIRouter, Depends
 from typing import Union
-from data.schemas import Recipe, RecipeCreate
+from data.schemas import Recipe, RecipeCreate, User
 from dependencies.db import get_db
 from sqlalchemy.orm import Session
 from utils import sql_utils
+from dependencies.users import get_current_user
 
 router = APIRouter(
     prefix="/recipes",
@@ -17,8 +18,8 @@ router = APIRouter(
 # Can make the return more concise but I don't know if it is better
 
 
-@router.post("/{user_id}", response_model=Recipe)
-def create_recipe(user_id: int, recipe: RecipeCreate, db: Session = Depends(get_db)):
+@router.post("", response_model=Recipe)
+def create_recipe(recipe: RecipeCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     '''
     Creates a new recipe and links it to the correspondng user
 
@@ -26,10 +27,10 @@ def create_recipe(user_id: int, recipe: RecipeCreate, db: Session = Depends(get_
     Has to be authorized
     '''
     # Check if user_id exists
-    user_db = sql_utils.get_user(db, user_id)
+    user_db = sql_utils.get_user(db, current_user.id)
     if not user_db:
         raise HTTPException(status_code=400, detail="user_id doesn't exist.")
-    return sql_utils.create_recipe(db=db, recipe=recipe, user_id=user_id)
+    return sql_utils.create_recipe(db=db, recipe=recipe, user_id=current_user.id)
 
 
 @router.get("", response_model=list[Recipe])
