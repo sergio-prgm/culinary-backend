@@ -3,13 +3,17 @@ from jose import ExpiredSignatureError, jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
 
 from data.schemas import TokenData, User
+from dependencies.db import get_db
 from dependencies.env import SECRET_KEY, ALGORITHM
+from sqlalchemy.orm import Session
+
+from utils import sql_utils
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     '''### Dependency
 
     Checks if the JWT is correct:
@@ -31,10 +35,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
-        username: str = payload.get("sub")
+        print(payload)
+        username: str = payload.get("username")
+        user_id = payload.get("sub")
         if username is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
+        token_data = TokenData(username=username, id=user_id)
     except ExpiredSignatureError:
         raise HTTPException(
             status_code=401,
@@ -43,13 +49,15 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         )
     except JWTError:
         raise credentials_exception
-    user = get_user(username=token_data.username)
+    user = sql_utils.get_user(db=db, user_id=token_data.id)
+    # user = get_user(username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
 
-
+""" 
 def get_user(db, username: str):
     if username in db:
         user_dict = db[username]
         return User(**user_dict)
+"""
