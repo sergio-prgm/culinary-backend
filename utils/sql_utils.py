@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 # from sqlalchemy import select
 
-from dependencies.dependencies import get_password_hash
+from dependencies import password as pwd
 from data import models, schemas
 
 
@@ -41,7 +41,7 @@ def create_user(db: Session, user: schemas.UserCreate):
     # Use password hash thing
     print(user)
     # fake_hashed_password = user.password + "almost"
-    hashed_password = get_password_hash(user.password)
+    hashed_password = pwd.get_password_hash(user.password)
     db_user = models.User(email=user.email,
                           hashed_password=hashed_password,
                           username=user.username)

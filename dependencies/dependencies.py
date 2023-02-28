@@ -1,17 +1,19 @@
 from datetime import timedelta, datetime
 from typing import Union
 
-from passlib.context import CryptContext
 from jose import jwt
-from dependencies.users import get_user
 from dependencies.env import ALGORITHM, SECRET_KEY
+from sqlalchemy.orm import Session
+
+from dependencies import password as pwd
+from utils import sql_utils
 
 
 def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
     '''
-    Creates and returns JWT with provided data and expiring date
+    Creates and returns JWT with provided data and expiring date.
 
-    It doesn't have the responsibility of the data that is put into it
+    It doesn't have the responsibility of the data that is put into it.
     '''
     to_encode = data.copy()
     if expires_delta:
@@ -25,40 +27,19 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
     return encoded_jwt
 
 
-# Password hashing:
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-def verify_password(plain_password, hashed_password):
+def authenticate_user(db: Session, user_email: str, password: str):
     '''
-    Checks if the provided password matches the hashed password
-
-    (Used for authentication purposes)
-    '''
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password):
-    '''
-    Creates the hashed password to store in the database
-
-    (Used for creating a new user)
-    '''
-    return pwd_context.hash(password)
-
-
-def authenticate_user(fake_db, username: str, password: str):
-    '''
-    Checks if the user provided exists and verifies the password given
+    Checks if the user id provided exists and verifies the password given
 
     If everything works correctly, it returns the user
 
     Used in /token
     '''
-    user = get_user(fake_db, username)
+    # user = get_user(db, username)
+    user = sql_utils.get_user_by_email(db=db, email=user_email)
     if not user:
         return False
-    if not verify_password(password, user.hashed_password):
+    if not pwd.verify_password(password, user.hashed_password):
         return False
     return user
 
